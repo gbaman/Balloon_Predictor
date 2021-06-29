@@ -1,4 +1,6 @@
 import datetime
+import threading
+import time
 from typing import List
 
 import folium
@@ -7,11 +9,13 @@ import requests
 PREDICTOR_URL = "http://predict.cusf.co.uk/api/v1/"
 VINCENT_SQUARE = ["51.4934", "-0.1351"]
 FURNEUX = ["51.9314", "0.0795"]
-TITLE = "Launches from Vincent Square and Furneux on the 16th March 2021 with bursts of 13000m, 23000m and 26000m"
+COLEMORE = ["51.0622", "-1.0097"]
+#TITLE = "Launches from Vincent Square, Furneux and Colemore Common on the 4th and 5th July 2021"
+TITLE = "Launches from Vincent Square on the 1st July 2021"
 
 
 class Flight():
-    def __init__(self, launch_latitude, launch_longitude, burst_altitude, ascent_rate, descent_rate, launch_datetime, launch_site_name, marker_colour, line_colour):
+    def __init__(self, launch_latitude, launch_longitude, burst_altitude, ascent_rate, descent_rate, launch_datetime, launch_site_name, marker_colour, line_colour, balloon_size):
         self.launch_latitude = launch_latitude
         self.launch_longitude = launch_longitude
         self.burst_altitude = burst_altitude
@@ -23,6 +27,7 @@ class Flight():
         self.burst_marker : LocationMarker = None
         self.marker_colour = marker_colour
         self.line_colour = line_colour
+        self.balloon_size = balloon_size
 
 
 class LocationMarker():
@@ -43,8 +48,16 @@ class LocationMarker():
             dt_object = datetime.datetime.strptime(self.datetime, '%Y-%m-%dT%H:%M:%SZ') + datetime.timedelta(hours=1)
         return f'{dt_object.strftime("%H:%M:%S")} BST'
 
+    @property
+    def date(self):
+        if "." in self.datetime:
+            dt_object = datetime.datetime.strptime(self.datetime, '%Y-%m-%dT%H:%M:%S.%fZ') + datetime.timedelta(hours=1)
+        else:
+            dt_object = datetime.datetime.strptime(self.datetime, '%Y-%m-%dT%H:%M:%SZ') + datetime.timedelta(hours=1)
+        return f'{dt_object.strftime("%a %d")}'
 
-def get_flight_route_data(launch:Flight):
+
+def get_flight_route_data(launch:Flight, flight_list):
     launch_longitude = float(launch.launch_longitude)
     if launch_longitude < 0:
         launch_longitude = 360 + launch_longitude
@@ -62,6 +75,8 @@ def get_flight_route_data(launch:Flight):
     for marker in response.json()["prediction"][0]["trajectory"] + response.json()["prediction"][1]["trajectory"]:
         launch.markers.append(LocationMarker(marker, launch))
     launch.burst_marker = LocationMarker(response.json()["prediction"][0]["trajectory"][-1], launch)
+    flight_list.append(launch)
+    print("Thread done")
     return launch
 
 
@@ -86,20 +101,67 @@ def draw_map(flights):
             points.append((point.latitude, point.longitude))
         folium.PolyLine(points, color=flight.line_colour, weight=2.5, opacity=1, ).add_to(m)
         for point in flight.markers:
-            folium.CircleMarker((point.latitude, point.longitude), radius=1, popup=f"{point.launch_details.launch_site_name}<br>Burst : {point.launch_details.burst_altitude}m<br>Altitude : {round(point.altitude)}m<br>Time : {point.time}",tooltip=f"{round(point.altitude)}m", color=flight.marker_colour).add_to(m)
-        folium.Marker((flight.markers[0].latitude, flight.markers[0].longitude),icon=folium.features.CustomIcon("static/img/target-1-sm.png", icon_size=(10, 10)), popup=f"Launch Site<br>Burst_Height:{flight.burst_altitude}m<br>Time : {flight.markers[0].time}").add_to(m)
-        folium.Marker((flight.burst_marker.latitude, flight.burst_marker.longitude), icon=folium.features.CustomIcon("static/img/pop-marker.png", icon_size=(20, 20)), popup=f"Burst<br>Burst_Height:{flight.burst_altitude}m<br>Time : {flight.burst_marker.time}").add_to(m)
-        folium.Marker((flight.markers[-1].latitude, flight.markers[-1].longitude),icon=folium.features.CustomIcon("static/img/target-8-sm.png", icon_size=(10, 10)), popup=f"Landing_Site<br>Burst_Height:{flight.burst_altitude}m<br>Time:{flight.markers[-1].time}").add_to(m)
+            folium.CircleMarker((point.latitude, point.longitude), radius=1, popup=f"{point.launch_details.launch_site_name}<br>Burst : {point.launch_details.burst_altitude}m<br>Altitude : {round(point.altitude)}m<br>Time : {point.time}<br>Balloon size : {flight.balloon_size}g<br>Ascent Rate : {flight.ascent_rate}m/s",tooltip=f"{round(point.altitude)}m<br>Date : {point.date}", color=flight.marker_colour).add_to(m)
+        folium.Marker((flight.markers[0].latitude, flight.markers[0].longitude),icon=folium.features.CustomIcon("static/img/target-1-sm.png", icon_size=(10, 10)), popup=f"Launch Site<br>Burst_Height:{flight.burst_altitude}m<br>Time : {flight.markers[0].time}<br>Balloon size : {flight.balloon_size}g<br>Date : {flight.markers[0].date}").add_to(m)
+        folium.Marker((flight.burst_marker.latitude, flight.burst_marker.longitude), icon=folium.features.CustomIcon("static/img/pop-marker.png", icon_size=(20, 20)), popup=f"Burst<br>Burst_Height:{flight.burst_altitude}m<br>Time : {flight.burst_marker.time}<br>Balloon size : {flight.balloon_size}g<br>Date : {flight.burst_marker.date}").add_to(m)
+        folium.Marker((flight.markers[-1].latitude, flight.markers[-1].longitude),icon=folium.features.CustomIcon("static/img/target-8-sm.png", icon_size=(10, 10)), popup=f"Landing_Site<br>Burst_Height:{flight.burst_altitude}m<br>Time:{flight.markers[-1].time}<br>Balloon size : {flight.balloon_size}g<br>Date : {flight.markers[-1].date}").add_to(m)
 
     return m
 
 def generate_flights():
+    print("Generating flights...")
+    DATE1 = "2021-07-05"
+    DATE2 = "2021-07-01"
     #flights = get_all_flights()
-    flights = []
-    flights.append(get_flight_route_data(Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 26000, 5, 5, "2021-04-16T11:00:00Z", "Vincent Square", "red", "orange")))
-    flights.append(get_flight_route_data(Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 23000, 5, 5, "2021-04-16T11:00:00Z", "Vincent Square", "red", "orange")))
-    flights.append(get_flight_route_data(Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 13000, 5, 5, "2021-04-16T11:00:00Z", "Vincent Square", "red", "orange")))
-    flights.append(get_flight_route_data(Flight(FURNEUX[0], FURNEUX[1], 26000, 5, 5, "2021-04-16T14:00:00Z", "Furneux", "blue", "purple")))
-    flights.append(get_flight_route_data(Flight(FURNEUX[0], FURNEUX[1], 23000, 5, 5, "2021-04-16T14:00:00Z", "Furneux", "blue", "purple")))
-    flights.append(get_flight_route_data(Flight(FURNEUX[0], FURNEUX[1], 13000, 5, 5, "2021-04-16T14:00:00Z", "Furneux", "blue", "purple")))
-    return draw_map(flights)
+
+    raw_flights = [
+        #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 27000, 5, 5, f"{DATE1}T03:30:00Z", "Vincent Square", "red", "orange", 600),
+        #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 20000, 4, 5, f"{DATE1}T03:30:00Z", "Vincent Square", "red", "orange", 350),
+        #Flight(FURNEUX[0], FURNEUX[1], 27000, 5, 5, f"{DATE1}T10:30:00Z", "Furneux", "blue", "purple", 600),
+        #Flight(FURNEUX[0], FURNEUX[1], 20000, 4, 5, f"{DATE1}T10:30:00Z", "Furneux", "blue", "purple", 350),
+        #Flight(FURNEUX[0], FURNEUX[1], 30000, 5, 5, f"{DATE1}T10:30:00Z", "Furneux", "blue", "purple", 1000),
+
+        #Flight(COLEMORE[0], COLEMORE[1], 27000, 5, 5, f"{DATE1}T10:30:00Z", "Colemore", "yellow", "purple", 600),
+        #Flight(COLEMORE[0], COLEMORE[1], 20000, 4, 5, f"{DATE1}T10:30:00Z", "Colemore", "yellow", "purple", 350),
+        #Flight(COLEMORE[0], COLEMORE[1], 30000, 5, 5, f"{DATE1}T10:30:00Z", "Colemore", "yellow", "purple", 1000),
+
+
+        #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 27000, 5, 5, f"{DATE2}T03:30:00Z", "Vincent Square", "green", "orange", 600),
+        #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 20000, 4, 5, f"{DATE2}T03:30:00Z", "Vincent Square", "green", "orange", 350),
+        #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 12700, 3, 5, f"{DATE2}T03:30:00Z", "Vincent Square", "green","orange", 200),
+        #Flight(FURNEUX[0], FURNEUX[1], 27000, 5, 5, f"{DATE2}T10:30:00Z", "Furneux", "orange", "purple", 600),
+        #Flight(FURNEUX[0], FURNEUX[1], 20000, 4, 5, f"{DATE2}T10:30:00Z", "Furneux", "orange", "purple", 350),
+        #Flight(FURNEUX[0], FURNEUX[1], 12700, 3, 5, f"{DATE2}T10:30:00Z", "Furneux", "orange", "purple", 200),
+        #Flight(FURNEUX[0], FURNEUX[1], 30000, 5, 5, f"{DATE2}T10:30:00Z", "Furneux", "orange", "purple", 1000),
+
+        #Flight(COLEMORE[0], COLEMORE[1], 27000, 5, 5, f"{DATE2}T10:30:00Z", "Colemore", "purple", "purple", 600),
+        #Flight(COLEMORE[0], COLEMORE[1], 20000, 4, 5, f"{DATE2}T10:30:00Z", "Colemore", "purple", "purple", 350),
+        #Flight(COLEMORE[0], COLEMORE[1], 12700, 3, 5, f"{DATE2}T10:30:00Z", "Colemore", "purple", "purple", 200),
+        #Flight(COLEMORE[0], COLEMORE[1], 30000, 5, 5, f"{DATE2}T10:30:00Z", "Colemore", "purple", "purple", 1000)
+
+        Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 26295, 2, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "blue", "red", 600),
+        Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 25698, 3, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "purple", "red", 600),
+        Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 24838, 4, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "green", "red", 600),
+        Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 19559, 2, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "blue", "red", 350),
+        Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 19048, 3, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "green", "red", 350),
+        Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 18313, 4, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "purple", "red", 350),
+        Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 13244, 2, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "blue","red", 200),
+        Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 12721, 3, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "green","red", 200),
+        Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 11969, 4, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "purple","red", 200),
+
+    ]
+    flight_threads = []
+    flight_list = []
+
+    for flight in raw_flights:
+        flight_thread = threading.Thread(target=get_flight_route_data, args=(flight, flight_list))
+        #flight_thread.daemon = True
+        flight_thread.start()
+        print("Thread started!")
+        #time.sleep(0.3)
+        flight_threads.append(flight_thread)
+    for flight_thread in flight_threads:
+        flight_thread.join()
+
+    print("All threads done")
+    return draw_map(flight_list)
