@@ -7,17 +7,21 @@ import folium
 import requests
 
 PREDICTOR_URL = "http://predict.cusf.co.uk/api/v1/"
-VINCENT_SQUARE = ["51.4934", "-0.1351"]
-FURNEUX = ["51.9314", "0.0795"]
-COLEMORE = ["51.0622", "-1.0097"]
+VINCENT_SQUARE = ["Vincent Square", "51.4934", "-0.1351"]
+FURNEUX = ["Furneux", "51.9314", "0.0795"]
+COLEMORE = ["Colemore Common", "51.0622", "-1.0097"]
 #TITLE = "Launches from Vincent Square, Furneux and Colemore Common on the 4th and 5th July 2021"
-TITLE = "Launches from Vincent Square on the 1st July 2021"
+TITLE = "Launches from Vincent Square, Furneux and Colemore Common on the 8th July 2021"
+
+DATE1 = "2021-07-05"
+DATE2 = "2021-07-08"
 
 
 class Flight():
-    def __init__(self, launch_latitude, launch_longitude, burst_altitude, ascent_rate, descent_rate, launch_datetime, launch_site_name, marker_colour, line_colour, balloon_size):
-        self.launch_latitude = launch_latitude
-        self.launch_longitude = launch_longitude
+    def __init__(self, launch_site, burst_altitude, ascent_rate, descent_rate, launch_datetime, launch_site_name, marker_colour, line_colour, balloon_size):
+        self.launch_site = launch_site[0]
+        self.launch_latitude = launch_site[1]
+        self.launch_longitude = launch_site[2]
         self.burst_altitude = burst_altitude
         self.ascent_rate = ascent_rate
         self.descent_rate = descent_rate
@@ -28,6 +32,45 @@ class Flight():
         self.marker_colour = marker_colour
         self.line_colour = line_colour
         self.balloon_size = balloon_size
+
+
+raw_flights = [
+    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 27000, 5, 5, f"{DATE1}T03:30:00Z", "Vincent Square", "red", "orange", 600),
+    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 20000, 4, 5, f"{DATE1}T03:30:00Z", "Vincent Square", "red", "orange", 350),
+    #Flight(FURNEUX[0], FURNEUX[1], 27000, 5, 5, f"{DATE1}T10:30:00Z", "Furneux", "blue", "purple", 600),
+    #Flight(FURNEUX[0], FURNEUX[1], 20000, 4, 5, f"{DATE1}T10:30:00Z", "Furneux", "blue", "purple", 350),
+    #Flight(FURNEUX[0], FURNEUX[1], 30000, 5, 5, f"{DATE1}T10:30:00Z", "Furneux", "blue", "purple", 1000),
+
+    #Flight(COLEMORE[0], COLEMORE[1], 27000, 5, 5, f"{DATE1}T10:30:00Z", "Colemore", "yellow", "purple", 600),
+    #Flight(COLEMORE[0], COLEMORE[1], 20000, 4, 5, f"{DATE1}T10:30:00Z", "Colemore", "yellow", "purple", 350),
+    #Flight(COLEMORE[0], COLEMORE[1], 30000, 5, 5, f"{DATE1}T10:30:00Z", "Colemore", "yellow", "purple", 1000),
+
+
+    Flight(VINCENT_SQUARE, 27000, 5, 5, f"{DATE2}T03:30:00Z", "Vincent Square", "green", "orange", 600),
+    Flight(VINCENT_SQUARE, 20000, 4, 5, f"{DATE2}T03:30:00Z", "Vincent Square", "purple", "orange", 350),
+    Flight(VINCENT_SQUARE, 12700, 3, 5, f"{DATE2}T03:30:00Z", "Vincent Square", "orange","orange", 200),
+
+    Flight(FURNEUX, 27000, 5, 5, f"{DATE2}T10:30:00Z", "Furneux", "green", "purple", 600),
+    Flight(FURNEUX, 20000, 4, 5, f"{DATE2}T10:30:00Z", "Furneux", "purple", "purple", 350),
+    Flight(FURNEUX, 12700, 3, 5, f"{DATE2}T10:30:00Z", "Furneux", "orange", "purple", 200),
+    Flight(FURNEUX, 30000, 5, 5, f"{DATE2}T10:30:00Z", "Furneux", "red", "purple", 1000),
+
+    Flight(COLEMORE, 27000, 5, 5, f"{DATE2}T10:30:00Z", "Colemore", "green", "purple", 600),
+    Flight(COLEMORE, 20000, 4, 5, f"{DATE2}T10:30:00Z", "Colemore", "purple", "purple", 350),
+    Flight(COLEMORE, 12700, 3, 5, f"{DATE2}T10:30:00Z", "Colemore", "orange", "purple", 200),
+    Flight(COLEMORE, 30000, 5, 5, f"{DATE2}T10:30:00Z", "Colemore", "red", "purple", 1000),
+
+    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 26295, 2, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "blue", "red", 600),
+    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 25698, 3, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "purple", "red", 600),
+    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 24838, 4, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "green", "red", 600),
+    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 19559, 2, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "blue", "red", 350),
+    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 19048, 3, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "green", "red", 350),
+    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 18313, 4, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "purple", "red", 350),
+    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 13244, 2, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "blue","red", 200),
+    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 12721, 3, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "green","red", 200),
+    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 11969, 4, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "purple","red", 200),
+
+]
 
 
 class LocationMarker():
@@ -93,7 +136,7 @@ def get_all_flights() -> List[List[LocationMarker]]:
 
 
 def draw_map(flights):
-    m = folium.Map(location=[VINCENT_SQUARE[0], VINCENT_SQUARE[1]], zoom_start=9)
+    m = folium.Map(location=[VINCENT_SQUARE[1], VINCENT_SQUARE[2]], zoom_start=9)
     m.get_root().html.add_child(folium.Element(f"""<h3 align="center" style="font-size:16px"><b>{TITLE}</b></h3>"""))
     for flight in flights:
         points = []
@@ -101,55 +144,16 @@ def draw_map(flights):
             points.append((point.latitude, point.longitude))
         folium.PolyLine(points, color=flight.line_colour, weight=2.5, opacity=1, ).add_to(m)
         for point in flight.markers:
-            folium.CircleMarker((point.latitude, point.longitude), radius=1, popup=f"{point.launch_details.launch_site_name}<br>Burst : {point.launch_details.burst_altitude}m<br>Altitude : {round(point.altitude)}m<br>Time : {point.time}<br>Balloon size : {flight.balloon_size}g<br>Ascent Rate : {flight.ascent_rate}m/s",tooltip=f"{round(point.altitude)}m<br>Date : {point.date}", color=flight.marker_colour).add_to(m)
-        folium.Marker((flight.markers[0].latitude, flight.markers[0].longitude),icon=folium.features.CustomIcon("static/img/target-1-sm.png", icon_size=(10, 10)), popup=f"Launch Site<br>Burst_Height:{flight.burst_altitude}m<br>Time : {flight.markers[0].time}<br>Balloon size : {flight.balloon_size}g<br>Date : {flight.markers[0].date}").add_to(m)
-        folium.Marker((flight.burst_marker.latitude, flight.burst_marker.longitude), icon=folium.features.CustomIcon("static/img/pop-marker.png", icon_size=(20, 20)), popup=f"Burst<br>Burst_Height:{flight.burst_altitude}m<br>Time : {flight.burst_marker.time}<br>Balloon size : {flight.balloon_size}g<br>Date : {flight.burst_marker.date}").add_to(m)
-        folium.Marker((flight.markers[-1].latitude, flight.markers[-1].longitude),icon=folium.features.CustomIcon("static/img/target-8-sm.png", icon_size=(10, 10)), popup=f"Landing_Site<br>Burst_Height:{flight.burst_altitude}m<br>Time:{flight.markers[-1].time}<br>Balloon size : {flight.balloon_size}g<br>Date : {flight.markers[-1].date}").add_to(m)
+            folium.CircleMarker((point.latitude, point.longitude), radius=1, popup=f"{point.launch_details.launch_site_name}<br>Burst : {point.launch_details.burst_altitude}m<br>Altitude : {round(point.altitude)}m<br>Time:{point.time}<br>Balloon size : {flight.balloon_size}g<br>Ascent Rate : {flight.ascent_rate}m/s",tooltip=f"{round(point.altitude)}m<br>Date : {point.date}", color=flight.marker_colour).add_to(m)
+        folium.Marker((flight.markers[0].latitude, flight.markers[0].longitude),icon=folium.features.CustomIcon("static/img/target-1-sm.png", icon_size=(10, 10)), popup=f"Launch Site<br>Burst_Height:{flight.burst_altitude}m<br>Time:{flight.markers[0].time}<br>Balloon size : {flight.balloon_size}g<br>Date : {flight.markers[0].date}").add_to(m)
+        folium.Marker((flight.burst_marker.latitude, flight.burst_marker.longitude), icon=folium.features.CustomIcon("static/img/pop-marker.png", icon_size=(20, 20)), popup=f"Burst<br>Burst_Height:{flight.burst_altitude}m<br>Time:{flight.burst_marker.time}<br>Balloon size : {flight.balloon_size}g<br>Date : {flight.burst_marker.date}").add_to(m)
+        folium.Marker((flight.markers[-1].latitude, flight.markers[-1].longitude),icon=folium.features.CustomIcon("static/img/target-8-sm.png", icon_size=(10, 10)), popup=f"Landing Site<br>Burst_Height:{flight.burst_altitude}m<br>Time:{flight.markers[-1].time}<br>Balloon size : {flight.balloon_size}g<br>Date : {flight.markers[-1].date}<br>Ascent Rate : {flight.ascent_rate}m/s").add_to(m)
 
     return m
 
 def generate_flights():
     print("Generating flights...")
-    DATE1 = "2021-07-05"
-    DATE2 = "2021-07-01"
-    #flights = get_all_flights()
 
-    raw_flights = [
-        #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 27000, 5, 5, f"{DATE1}T03:30:00Z", "Vincent Square", "red", "orange", 600),
-        #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 20000, 4, 5, f"{DATE1}T03:30:00Z", "Vincent Square", "red", "orange", 350),
-        #Flight(FURNEUX[0], FURNEUX[1], 27000, 5, 5, f"{DATE1}T10:30:00Z", "Furneux", "blue", "purple", 600),
-        #Flight(FURNEUX[0], FURNEUX[1], 20000, 4, 5, f"{DATE1}T10:30:00Z", "Furneux", "blue", "purple", 350),
-        #Flight(FURNEUX[0], FURNEUX[1], 30000, 5, 5, f"{DATE1}T10:30:00Z", "Furneux", "blue", "purple", 1000),
-
-        #Flight(COLEMORE[0], COLEMORE[1], 27000, 5, 5, f"{DATE1}T10:30:00Z", "Colemore", "yellow", "purple", 600),
-        #Flight(COLEMORE[0], COLEMORE[1], 20000, 4, 5, f"{DATE1}T10:30:00Z", "Colemore", "yellow", "purple", 350),
-        #Flight(COLEMORE[0], COLEMORE[1], 30000, 5, 5, f"{DATE1}T10:30:00Z", "Colemore", "yellow", "purple", 1000),
-
-
-        #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 27000, 5, 5, f"{DATE2}T03:30:00Z", "Vincent Square", "green", "orange", 600),
-        #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 20000, 4, 5, f"{DATE2}T03:30:00Z", "Vincent Square", "green", "orange", 350),
-        #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 12700, 3, 5, f"{DATE2}T03:30:00Z", "Vincent Square", "green","orange", 200),
-        #Flight(FURNEUX[0], FURNEUX[1], 27000, 5, 5, f"{DATE2}T10:30:00Z", "Furneux", "orange", "purple", 600),
-        #Flight(FURNEUX[0], FURNEUX[1], 20000, 4, 5, f"{DATE2}T10:30:00Z", "Furneux", "orange", "purple", 350),
-        #Flight(FURNEUX[0], FURNEUX[1], 12700, 3, 5, f"{DATE2}T10:30:00Z", "Furneux", "orange", "purple", 200),
-        #Flight(FURNEUX[0], FURNEUX[1], 30000, 5, 5, f"{DATE2}T10:30:00Z", "Furneux", "orange", "purple", 1000),
-
-        #Flight(COLEMORE[0], COLEMORE[1], 27000, 5, 5, f"{DATE2}T10:30:00Z", "Colemore", "purple", "purple", 600),
-        #Flight(COLEMORE[0], COLEMORE[1], 20000, 4, 5, f"{DATE2}T10:30:00Z", "Colemore", "purple", "purple", 350),
-        #Flight(COLEMORE[0], COLEMORE[1], 12700, 3, 5, f"{DATE2}T10:30:00Z", "Colemore", "purple", "purple", 200),
-        #Flight(COLEMORE[0], COLEMORE[1], 30000, 5, 5, f"{DATE2}T10:30:00Z", "Colemore", "purple", "purple", 1000)
-
-        Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 26295, 2, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "blue", "red", 600),
-        Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 25698, 3, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "purple", "red", 600),
-        Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 24838, 4, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "green", "red", 600),
-        Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 19559, 2, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "blue", "red", 350),
-        Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 19048, 3, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "green", "red", 350),
-        Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 18313, 4, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "purple", "red", 350),
-        Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 13244, 2, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "blue","red", 200),
-        Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 12721, 3, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "green","red", 200),
-        Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 11969, 4, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "purple","red", 200),
-
-    ]
     flight_threads = []
     flight_list = []
 
