@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Balloon map</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/balloon.css">
-</head>
-<body>
+{% extends "layout.html" %}
+{% block content %}
 {{ map_data|safe }}
 <h1>Balloon launches</h1>
 <table>
@@ -17,6 +11,7 @@
     <th>Launch date/time (UTC)</th>
     <th>Balloon type</th>
     <th>Marker colour</th>
+    <th>Error</th>
 </tr>
     {% for flight in raw_flights %}
         <tr>
@@ -27,8 +22,12 @@
             <td>{{ flight.launch_datetime }}</td>
             <td>{{ flight.balloon_size }}g</td>
             <td>{{ flight.marker_colour }}</td>
+            {% if flight.error %}
+            <td bgcolor="red">{{ flight.error['description'] }}</td>
+            {% else %}
+            <td>Success</td>
+            {% endif %}
         </tr>
     {% endfor %}
 </table>
-</body>
-</html>
+{% endblock %}

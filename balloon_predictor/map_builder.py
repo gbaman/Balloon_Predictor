@@ -6,12 +6,9 @@ from typing import List
 import folium
 import requests
 
-from config import CASTOR_BAY, FURNEUX, VINCENT_SQUARE, COLEMORE
+from config import CASTOR_BAY, FURNEUX, VINCENT_SQUARE, COLEMORE, HOURLY_FLIGHT_PROFILE, TITLE, HOURLY_TITLE
 
 PREDICTOR_URL = "http://predict.cusf.co.uk/api/v1/"
-#TITLE = "Launches from Vincent Square, Furneux and Colemore Common on the 4th and 5th July 2021"
-TITLE = "Launches from Vincent Square, Furneux and Colemore Common on the 8th July 2021"
-HOURLY_TITLE = "Hourly launches"
 
 DATE1 = "2021-07-05"
 DATE2 = "2021-10-30"
@@ -32,6 +29,7 @@ class Flight():
         self.marker_colour = marker_colour
         self.line_colour = line_colour
         self.balloon_size = balloon_size
+        self.error = None
 
 
 raw_flights = [
@@ -123,9 +121,12 @@ def get_flight_route_data(launch:Flight, flight_list):
         "profile":"standard_profile",
         "version":"1"
     })
-    for marker in response.json()["prediction"][0]["trajectory"] + response.json()["prediction"][1]["trajectory"]:
-        launch.markers.append(LocationMarker(marker, launch))
-    launch.burst_marker = LocationMarker(response.json()["prediction"][0]["trajectory"][-1], launch)
+    if "error" in response.json():
+        launch.error = response.json()["error"]
+    else:
+        for marker in response.json()["prediction"][0]["trajectory"] + response.json()["prediction"][1]["trajectory"]:
+            launch.markers.append(LocationMarker(marker, launch))
+        launch.burst_marker = LocationMarker(response.json()["prediction"][0]["trajectory"][-1], launch)
     flight_list.append(launch)
     print("Thread done")
     return launch
@@ -147,6 +148,8 @@ def draw_launch_map(flights):
     m = folium.Map(location=[VINCENT_SQUARE[1], VINCENT_SQUARE[2]], zoom_start=9)
     m.get_root().html.add_child(folium.Element(f"""<h3 align="center" style="font-size:16px"><b>{TITLE}</b></h3>"""))
     for flight in flights:
+        if flight.error:
+            continue
         points = []
         for point in flight.markers:
             points.append((point.latitude, point.longitude))
@@ -171,7 +174,7 @@ def draw_hourly_map(flights):
                       popup=f"<b>Landing Site</b><br>Burst_Height:{flight.burst_altitude}m<br>Time:{flight.markers[-1].time}<br>Date:{flight.markers[-1].full_date}<br>Balloon size : {flight.balloon_size}g<br>Ascent Rate : {flight.ascent_rate}m/s").add_to(m)
     folium.PolyLine(points, color=flight.line_colour, weight=1.2, opacity=1, ).add_to(m)
     folium.Marker((flight.markers[0].latitude, flight.markers[0].longitude),
-                  icon=folium.features.CustomIcon("static/img/target-8-sm.png", icon_size=(10, 10)),
+                  icon=folium.features.CustomIcon("static/img/target-8-sm.png", icon_size=(15, 15)),
                   popup=f"Launch site").add_to(m)
     return m
 
@@ -186,8 +189,8 @@ def generate_hourly_flights(location):
     HOUR_GAP = 2
     for index in range(0, int((24/HOUR_GAP) * DAYS)):
         new_datetime = start + datetime.timedelta(hours=index*HOUR_GAP)
-        if 18 > new_datetime.hour > 6:
-            flights.append(Flight(location, 26000, 5, 5, f"{new_datetime.strftime('%Y-%m-%dT%H:%M:%S')}Z", location[0], "pink", "red", 600))
+        if 18 > new_datetime.hour > 3:
+            flights.append(Flight(location, HOURLY_FLIGHT_PROFILE[0], HOURLY_FLIGHT_PROFILE[1], HOURLY_FLIGHT_PROFILE[2], f"{new_datetime.strftime('%Y-%m-%dT%H:%M:%S')}Z", location[0], "pink", "red", HOURLY_FLIGHT_PROFILE[3]))
 
     for flight in flights:
         flight_thread = threading.Thread(target=get_flight_route_data, args=(flight, flight_list))
@@ -199,9 +202,6 @@ def generate_hourly_flights(location):
 
     flight_list.sort(key=lambda f: f.launch_datetime)
     return draw_hourly_map(flight_list)
-
-
-    print()
 
 
 def generate_launch_flights():

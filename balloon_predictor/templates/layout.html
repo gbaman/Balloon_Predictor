@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/static/css/balloon.css">
+    <script src="/static/js/scripts.js"></script>
+    <title>{{title}}</title>
+</head>
+<body>
+
+  <a class="navbar-brand" href="#">Always expand</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample02" aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarsExample02">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Link</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-md-0">
+      <input class="form-control" type="text" placeholder="Search">
+    </form>
+  </div>
+
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href="/">Balloon Predictor</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+      <ul class="navbar-nav mr-auto">
+        {% for nav_parent in nav_bar %}
+            {% if nav_parent | length == 1 %}
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{ nav_parent[0][1] }}">{{ nav_parent[0][0] }}<span class="sr-only">(current)</span></a>
+                </li>
+            {% else %}
+                <li class=" nav-item dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{ nav_parent[0][0] }}<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                {% for nav_item in nav_parent %}
+                    <li><a class="dropdown-item" href="{{ nav_item[1] }}">{{ nav_item[0] }}</a></li>
+                {% endfor %}
+                    </ul>
+                </li>
+
+            {% endif %}
+      {% endfor %}
+
+      </ul>
+
+
+
+          <!--
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#">Disabled</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="https://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown01">
+              <a class="dropdown-item" href="#">Action</a>
+              <a class="dropdown-item" href="#">Another action</a>
+              <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+          </li>
+        </ul> -->
+      </div>
+    </nav>
+    <div class="main-body" style="padding: 10px">
+    <!--<div class="container">-->
+        <br>
+        <br>
+        {% block content %}
+
+        {% endblock %}
+
+    <p>Built using the <a href="https://tawhiri.readthedocs.io/en/latest/api.html">CUSF Tawhiri API</a>, <a href="https://python-visualization.github.io/folium/">Folium</a>, <a href="https://flask.palletsprojects.com">Flask</a> and <a href="https://www.python.org/">Python</a>. <a href="https://github.com/gbaman/Balloon_Predictor">Project Github</a>.</p>
+    <!--</div>-->
+    </div>
+</body>
+</html>

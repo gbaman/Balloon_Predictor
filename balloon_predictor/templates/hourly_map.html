@@ -1,9 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Balloon map</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/balloon.css">
-</head>
-<body>
+{% extends "layout.html" %}
+{% block content %}
 {{ map_data|safe }}
+{% endblock %}
