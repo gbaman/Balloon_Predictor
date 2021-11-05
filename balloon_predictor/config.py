@@ -13,7 +13,7 @@ LOCATIONS = [VINCENT_SQUARE, CASTOR_BAY, FURNEUX, COLEMORE]
 DEFAULT_LOCATION = FURNEUX
 
 # Burst altitude, assent rate, descent rate, balloon size
-HOURLY_FLIGHT_PROFILE = [26000, 3, 5, 600]
+HOURLY_FLIGHT_PROFILE = [26000, 4.5, 5, 600]
 
 # Main home page title
 TITLE = "Launches from Vincent Square"
