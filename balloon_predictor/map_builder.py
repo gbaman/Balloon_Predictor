@@ -179,7 +179,7 @@ def draw_hourly_map(flights):
     return m
 
 
-def generate_hourly_flights(location):
+def generate_hourly_flights(location, burst_altitude, ascent_rate, descent_rate, balloon_size):
     print("Generating flights...")
     flights = []
     flight_threads = []
@@ -190,7 +190,7 @@ def generate_hourly_flights(location):
     for index in range(0, int((24/HOUR_GAP) * DAYS)):
         new_datetime = start + datetime.timedelta(hours=index*HOUR_GAP)
         if 18 > new_datetime.hour > 3:
-            flights.append(Flight(location, HOURLY_FLIGHT_PROFILE[0], HOURLY_FLIGHT_PROFILE[1], HOURLY_FLIGHT_PROFILE[2], f"{new_datetime.strftime('%Y-%m-%dT%H:%M:%S')}Z", location[0], "pink", "red", HOURLY_FLIGHT_PROFILE[3]))
+            flights.append(Flight(location, burst_altitude, ascent_rate, descent_rate, f"{new_datetime.strftime('%Y-%m-%dT%H:%M:%S')}Z", location[0], "pink", "red", balloon_size))
 
     for flight in flights:
         flight_thread = threading.Thread(target=get_flight_route_data, args=(flight, flight_list))
