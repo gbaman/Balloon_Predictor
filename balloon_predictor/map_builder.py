@@ -10,8 +10,8 @@ from config import CASTOR_BAY, FURNEUX, VINCENT_SQUARE, COLEMORE, HOURLY_FLIGHT_
 
 PREDICTOR_URL = "http://predict.cusf.co.uk/api/v1/"
 
-DATE1 = "2021-07-05"
-DATE2 = "2021-10-30"
+DATE1 = "2021-11-13"
+DATE2 = "2021-11-14"
 
 
 class Flight():
@@ -43,10 +43,12 @@ raw_flights = [
     #Flight(COLEMORE[0], COLEMORE[1], 20000, 4, 5, f"{DATE1}T10:30:00Z", "Colemore", "yellow", "purple", 350),
     #Flight(COLEMORE[0], COLEMORE[1], 30000, 5, 5, f"{DATE1}T10:30:00Z", "Colemore", "yellow", "purple", 1000),
 
-    Flight(VINCENT_SQUARE, 26000, 5, 5, f"{DATE2}T10:30:00Z", "Vincent Square", "pink", "orange", 600),
-    Flight(VINCENT_SQUARE, 26000, 4, 5, f"{DATE2}T10:30:00Z", "Vincent Square", "green", "orange", 600),
-    Flight(VINCENT_SQUARE, 26000, 3, 5, f"{DATE2}T10:30:00Z", "Vincent Square", "purple", "orange", 350),
-    Flight(VINCENT_SQUARE, 26000, 2, 5, f"{DATE2}T10:30:00Z", "Vincent Square", "orange","orange", 200),
+    Flight(FURNEUX, 20000, 5.8, 5, f"{DATE1}T13:30:00Z", "Furneux", "pink", "orange", 350),
+    Flight(FURNEUX, 20000, 5.8, 5, f"{DATE1}T11:30:00Z", "Furneux", "green", "orange", 350),
+
+    Flight(FURNEUX, 20000, 5.8, 5, f"{DATE2}T13:30:00Z", "Furneux", "purple", "orange", 350),
+    Flight(FURNEUX, 20000, 5.8, 5, f"{DATE2}T11:30:00Z", "Furneux", "orange","orange", 350),
+    Flight(FURNEUX, 26000, 4, 5, f"{DATE2}T13:30:00Z", "Furneux", "red","grey", 600),
 
     #Flight(FURNEUX, 27000, 5, 5, f"{DATE2}T10:30:00Z", "Furneux", "green", "purple", 600),
     #Flight(FURNEUX, 20000, 4, 5, f"{DATE2}T10:30:00Z", "Furneux", "purple", "purple", 350),

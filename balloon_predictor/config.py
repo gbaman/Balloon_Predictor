@@ -16,7 +16,7 @@ DEFAULT_LOCATION = FURNEUX
 HOURLY_FLIGHT_PROFILE = [26000, 4.5, 5, 600]
 
 # Main home page title
-TITLE = "Launches from Vincent Square"
+TITLE = "Launches from Furneux"
 
 # Title for hourly launches pages
 HOURLY_TITLE = "Hourly launches"
