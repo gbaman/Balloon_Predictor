@@ -6,106 +6,12 @@ from typing import List
 import folium
 import requests
 
+import config
 from config import CASTOR_BAY, FURNEUX, VINCENT_SQUARE, COLEMORE, HOURLY_FLIGHT_PROFILE, TITLE, HOURLY_TITLE
 
+from util import Flight, LocationMarker
+
 PREDICTOR_URL = "http://predict.cusf.co.uk/api/v1/"
-
-DATE1 = "2021-11-13"
-DATE2 = "2021-11-14"
-
-
-class Flight():
-    def __init__(self, launch_site, burst_altitude, ascent_rate, descent_rate, launch_datetime, launch_site_name, marker_colour, line_colour, balloon_size):
-        self.launch_site = launch_site[0]
-        self.launch_latitude = launch_site[1]
-        self.launch_longitude = launch_site[2]
-        self.burst_altitude = burst_altitude
-        self.ascent_rate = ascent_rate
-        self.descent_rate = descent_rate
-        self.launch_datetime = launch_datetime
-        self.launch_site_name = launch_site_name
-        self.markers: List[LocationMarker] = []
-        self.burst_marker : LocationMarker = None
-        self.marker_colour = marker_colour
-        self.line_colour = line_colour
-        self.balloon_size = balloon_size
-        self.error = None
-
-
-raw_flights = [
-    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 27000, 5, 5, f"{DATE1}T03:30:00Z", "Vincent Square", "red", "orange", 600),
-    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 20000, 4, 5, f"{DATE1}T03:30:00Z", "Vincent Square", "red", "orange", 350),
-    #Flight(FURNEUX[0], FURNEUX[1], 27000, 5, 5, f"{DATE1}T10:30:00Z", "Furneux", "blue", "purple", 600),
-    #Flight(FURNEUX[0], FURNEUX[1], 20000, 4, 5, f"{DATE1}T10:30:00Z", "Furneux", "blue", "purple", 350),
-    #Flight(FURNEUX[0], FURNEUX[1], 30000, 5, 5, f"{DATE1}T10:30:00Z", "Furneux", "blue", "purple", 1000),
-
-    #Flight(COLEMORE[0], COLEMORE[1], 27000, 5, 5, f"{DATE1}T10:30:00Z", "Colemore", "yellow", "purple", 600),
-    #Flight(COLEMORE[0], COLEMORE[1], 20000, 4, 5, f"{DATE1}T10:30:00Z", "Colemore", "yellow", "purple", 350),
-    #Flight(COLEMORE[0], COLEMORE[1], 30000, 5, 5, f"{DATE1}T10:30:00Z", "Colemore", "yellow", "purple", 1000),
-
-    Flight(FURNEUX, 20000, 5.8, 5, f"{DATE1}T13:30:00Z", "Furneux", "pink", "orange", 350),
-    Flight(FURNEUX, 20000, 5.8, 5, f"{DATE1}T11:30:00Z", "Furneux", "green", "orange", 350),
-
-    Flight(FURNEUX, 20000, 5.8, 5, f"{DATE2}T13:30:00Z", "Furneux", "purple", "orange", 350),
-    Flight(FURNEUX, 20000, 5.8, 5, f"{DATE2}T11:30:00Z", "Furneux", "orange","orange", 350),
-    Flight(FURNEUX, 26000, 4, 5, f"{DATE2}T13:30:00Z", "Furneux", "red","grey", 600),
-
-    #Flight(FURNEUX, 27000, 5, 5, f"{DATE2}T10:30:00Z", "Furneux", "green", "purple", 600),
-    #Flight(FURNEUX, 20000, 4, 5, f"{DATE2}T10:30:00Z", "Furneux", "purple", "purple", 350),
-    #Flight(FURNEUX, 12700, 3, 5, f"{DATE2}T10:30:00Z", "Furneux", "orange", "purple", 200),
-    #Flight(FURNEUX, 30000, 5, 5, f"{DATE2}T10:30:00Z", "Furneux", "red", "purple", 1000),
-
-    #Flight(COLEMORE, 27000, 5, 5, f"{DATE2}T10:30:00Z", "Colemore", "green", "purple", 600),
-    #Flight(COLEMORE, 20000, 4, 5, f"{DATE2}T10:30:00Z", "Colemore", "purple", "purple", 350),
-    #Flight(COLEMORE, 12700, 3, 5, f"{DATE2}T10:30:00Z", "Colemore", "orange", "purple", 200),
-    #Flight(COLEMORE, 30000, 5, 5, f"{DATE2}T10:30:00Z", "Colemore", "red", "purple", 1000),
-
-    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 26295, 2, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "blue", "red", 600),
-    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 25698, 3, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "purple", "red", 600),
-    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 24838, 4, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "green", "red", 600),
-    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 19559, 2, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "blue", "red", 350),
-    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 19048, 3, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "green", "red", 350),
-    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 18313, 4, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "purple", "red", 350),
-    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 13244, 2, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "blue","red", 200),
-    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 12721, 3, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "green","red", 200),
-    #Flight(VINCENT_SQUARE[0], VINCENT_SQUARE[1], 11969, 4, 5, f"{DATE2}T03:45:00Z", "Vincent Square", "purple","red", 200),
-
-]
-
-
-class LocationMarker():
-    def __init__(self, data, launch_details: Flight):
-        self.longitude = float(data["longitude"])
-        if self.longitude > 180.0:
-            self.longitude = self.longitude - 360.0
-        self.datetime = data["datetime"]
-        self.latitude = data["latitude"]
-        self.altitude = data["altitude"]
-        self.launch_details = launch_details
-
-    @property
-    def time(self):
-        if "." in self.datetime:
-            dt_object = datetime.datetime.strptime(self.datetime, '%Y-%m-%dT%H:%M:%S.%fZ') + datetime.timedelta(hours=1)
-        else:
-            dt_object = datetime.datetime.strptime(self.datetime, '%Y-%m-%dT%H:%M:%SZ') + datetime.timedelta(hours=1)
-        return f'{dt_object.strftime("%H:%M:%S")} BST'
-
-    @property
-    def date(self):
-        if "." in self.datetime:
-            dt_object = datetime.datetime.strptime(self.datetime, '%Y-%m-%dT%H:%M:%S.%fZ') + datetime.timedelta(hours=1)
-        else:
-            dt_object = datetime.datetime.strptime(self.datetime, '%Y-%m-%dT%H:%M:%SZ') + datetime.timedelta(hours=1)
-        return f'{dt_object.strftime("%a %d")}'
-
-    @property
-    def full_date(self):
-        if "." in self.datetime:
-            dt_object = datetime.datetime.strptime(self.datetime, '%Y-%m-%dT%H:%M:%S.%fZ') + datetime.timedelta(hours=1)
-        else:
-            dt_object = datetime.datetime.strptime(self.datetime, '%Y-%m-%dT%H:%M:%SZ') + datetime.timedelta(hours=1)
-        return f'{dt_object.strftime("%a %d %b")}'
 
 
 def get_flight_route_data(launch:Flight, flight_list):
@@ -132,18 +38,6 @@ def get_flight_route_data(launch:Flight, flight_list):
     flight_list.append(launch)
     print("Thread done")
     return launch
-
-
-# No longer used
-def get_all_flights() -> List[List[LocationMarker]]:
-    flights = []
-    current_datetime = datetime.datetime.utcnow()
-    while current_datetime < datetime.datetime.utcnow() + datetime.timedelta(days=3):
-        print(f"Requesting for {current_datetime.isoformat('T') + 'Z'}")
-        new_markers = get_flight_route_data(longitude, latitude, 23000, 5, 5, current_datetime.isoformat("T") + "Z")
-        flights.append(new_markers)
-        current_datetime = current_datetime + datetime.timedelta(hours=4)
-    return flights
 
 
 def draw_launch_map(flights):
@@ -212,7 +106,7 @@ def generate_launch_flights():
     flight_threads = []
     flight_list = []
 
-    for flight in raw_flights:
+    for flight in config.RAW_FLIGHTS:
         flight_thread = threading.Thread(target=get_flight_route_data, args=(flight, flight_list))
         #flight_thread.daemon = True
         flight_thread.start()
