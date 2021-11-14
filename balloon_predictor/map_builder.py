@@ -14,6 +14,8 @@ from util import Flight, LocationMarker
 PREDICTOR_URL = "http://predict.cusf.co.uk/api/v1/"
 
 
+
+
 def get_flight_route_data(launch:Flight, flight_list):
     launch_longitude = float(launch.launch_longitude)
     if launch_longitude < 0:
@@ -86,7 +88,7 @@ def generate_hourly_flights(location, burst_altitude, ascent_rate, descent_rate,
     for index in range(0, int((24/HOUR_GAP) * DAYS)):
         new_datetime = start + datetime.timedelta(hours=index*HOUR_GAP)
         if 18 > new_datetime.hour > 3:
-            flights.append(Flight(location, burst_altitude, ascent_rate, descent_rate, f"{new_datetime.strftime('%Y-%m-%dT%H:%M:%S')}Z", location[0], "pink", "red", balloon_size))
+            flights.append(Flight(location, burst_altitude, ascent_rate, descent_rate, f"{new_datetime.strftime('%Y-%m-%dT%H:%M:%S')}Z", balloon_size))
 
     for flight in flights:
         flight_thread = threading.Thread(target=get_flight_route_data, args=(flight, flight_list))

@@ -1,9 +1,11 @@
 import datetime
 from typing import List
+import random
 
+COLOURS = ["red", "blue", "green", "purple", "orange", "darkred", "lightred", "darkblue", "darkgreen", "cadetblue", "darkpurple", "pink", "gray", "black"]
 
 class Flight():
-    def __init__(self, launch_site, burst_altitude, ascent_rate, descent_rate, launch_datetime, launch_site_name, marker_colour, line_colour, balloon_size):
+    def __init__(self, launch_site, burst_altitude, ascent_rate, descent_rate, launch_datetime, balloon_size):
         self.launch_site = launch_site[0]
         self.launch_latitude = launch_site[1]
         self.launch_longitude = launch_site[2]
@@ -11,13 +13,13 @@ class Flight():
         self.ascent_rate = ascent_rate
         self.descent_rate = descent_rate
         self.launch_datetime = launch_datetime
-        self.launch_site_name = launch_site_name
+        self.launch_site_name = launch_site[0]
         self.markers: List[LocationMarker] = []
         self.burst_marker : LocationMarker = None
-        self.marker_colour = marker_colour
-        self.line_colour = line_colour
         self.balloon_size = balloon_size
         self.error = None
+        self.marker_colour = random.choice(COLOURS)
+        self.line_colour = random.choice(list(set(COLOURS) - set(self.marker_colour)))
 
 
 class LocationMarker():
