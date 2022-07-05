@@ -7,7 +7,7 @@ import folium
 import requests
 
 import config
-from config import CASTOR_BAY, FURNEUX, VINCENT_SQUARE, COLEMORE, HOURLY_FLIGHT_PROFILE, TITLE, HOURLY_TITLE
+from config import CASTOR_BAY, FURNEUX, VINCENT_SQUARE, COLEMORE, HOURLY_FLIGHT_PROFILE, TITLE, HOURLY_TITLE, DEFAULT_LOCATION
 
 from util import Flight, LocationMarker
 
@@ -43,7 +43,7 @@ def get_flight_route_data(launch:Flight, flight_list):
 
 
 def draw_launch_map(flights):
-    m = folium.Map(location=[VINCENT_SQUARE[1], VINCENT_SQUARE[2]], zoom_start=9)
+    m = folium.Map(location=[DEFAULT_LOCATION[1], DEFAULT_LOCATION[2]], zoom_start=9)
     m.get_root().html.add_child(folium.Element(f"""<h3 align="center" style="font-size:16px"><b>{TITLE}</b></h3>"""))
     for flight in flights:
         if flight.error:
@@ -54,10 +54,10 @@ def draw_launch_map(flights):
         folium.PolyLine(points, color=flight.line_colour, weight=2.5, opacity=1, ).add_to(m)
         for point in flight.markers:
             folium.CircleMarker((point.latitude, point.longitude), radius=1, popup=f"{point.launch_details.launch_site_name}<br>Burst : {point.launch_details.burst_altitude}m<br>Altitude : {round(point.altitude)}m<br>Time:{point.time}<br>Balloon size : {flight.balloon_size}g<br>Ascent Rate : {flight.ascent_rate}m/s",tooltip=f"{round(point.altitude)}m<br>Date : {point.date}", color=flight.marker_colour).add_to(m)
-        folium.Marker((flight.markers[0].latitude, flight.markers[0].longitude),icon=folium.features.CustomIcon("static/img/target-1-sm.png", icon_size=(10, 10)), popup=f"Launch Site<br>Burst_Height:{flight.burst_altitude}m<br>Time:{flight.markers[0].time}<br>Balloon size : {flight.balloon_size}g<br>Date : {flight.markers[0].date}").add_to(m)
-        folium.Marker((flight.burst_marker.latitude, flight.burst_marker.longitude), icon=folium.features.CustomIcon("static/img/pop-marker.png", icon_size=(20, 20)), popup=f"Burst<br>Burst_Height:{flight.burst_altitude}m<br>Time:{flight.burst_marker.time}<br>Balloon size : {flight.balloon_size}g<br>Date : {flight.burst_marker.date}").add_to(m)
-        folium.Marker((flight.markers[-1].latitude, flight.markers[-1].longitude),icon=folium.features.CustomIcon("static/img/target-8-sm.png", icon_size=(10, 10)), popup=f"Landing Site<br>Burst_Height:{flight.burst_altitude}m<br>Time:{flight.markers[-1].time}<br>Balloon size : {flight.balloon_size}g<br>Date : {flight.markers[-1].date}<br>Ascent Rate : {flight.ascent_rate}m/s").add_to(m)
-
+        #folium.Marker((flight.markers[0].latitude, flight.markers[0].longitude),icon=folium.features.CustomIcon("static/img/target-1-sm.png", icon_size=(10, 10)), popup=f"Launch Site<br>Burst_Height:{flight.burst_altitude}m<br>Time:{flight.markers[0].time}<br>Balloon size : {flight.balloon_size}g<br>Date : {flight.markers[0].date}").add_to(m)
+        ##folium.Marker((flight.burst_marker.latitude, flight.burst_marker.longitude), icon=folium.features.CustomIcon("static/img/pop-marker.png", icon_size=(20, 20)), popup=f"Burst<br>Burst_Height:{flight.burst_altitude}m<br>Time:{flight.burst_marker.time}<br>Balloon size : {flight.balloon_size}g<br>Date : {flight.burst_marker.date}").add_to(m)
+        #folium.Marker((flight.markers[-1].latitude, flight.markers[-1].longitude),icon=folium.features.CustomIcon("static/img/target-8-sm.png", icon_size=(10, 10)), popup=f"Landing Site<br>Burst_Height:{flight.burst_altitude}m<br>Time:{flight.markers[-1].time}<br>Balloon size : {flight.balloon_size}g<br>Date : {flight.markers[-1].date}<br>Ascent Rate : {flight.ascent_rate}m/s").add_to(m)
+    m._repr_html_()
     return m
 
 
