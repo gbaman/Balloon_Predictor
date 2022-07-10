@@ -11,6 +11,8 @@
     <th>Launch date/time (UTC)</th>
     <th>Balloon type</th>
     <th>Marker colour</th>
+    <th>Landing time</th>
+    <th>Notes</th>
     <th>Error</th>
 </tr>
     {% for flight in raw_flights %}
@@ -19,9 +21,11 @@
             <td>{{ flight.burst_altitude }}m</td>
             <td>{{ flight.ascent_rate }}m/s</td>
             <td>{{ flight.descent_rate }}m/s</td>
-            <td>{{ flight.launch_datetime }}</td>
+            <td>{{ flight.launch_datetime_obj.strftime('%Y-%m-%d %H:%M') }}</td>
             <td>{{ flight.balloon_size }}g</td>
             <td>{{ flight.marker_colour }}</td>
+            <td>{{ flight.landing_time }}</td>
+            <td>{{ flight.notes }}</td>
             {% if flight.error %}
             <td bgcolor="red">{{ flight.error['description'] }}</td>
             {% else %}

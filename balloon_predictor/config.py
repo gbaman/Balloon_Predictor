@@ -11,39 +11,23 @@ COLEMORE = ["Colemore Common", "51.0622", "-1.0097"]
 LOCATIONS = [VINCENT_SQUARE, CASTOR_BAY, FURNEUX, COLEMORE]
 
 # Default location used for hourly predictions
-DEFAULT_LOCATION = FURNEUX
+DEFAULT_LOCATION = VINCENT_SQUARE
 
 # Burst altitude, assent rate, descent rate, balloon size
 HOURLY_FLIGHT_PROFILE = [26000, 4.5, 5, 600]
 
 # Main home page title
-TITLE = "Launches from Furneux"
+TITLE = "Launches from Vincent Square"
 
 # Title for hourly launches pages
 HOURLY_TITLE = "Hourly launches"
 
-DATE1 = "2021-11-20"
-DATE2 = "2021-11-21"
-DATE3 = "2021-11-22"
-
-RAW_FLIGHTS = [
-    Flight(FURNEUX, 20000, 5.8, 5, f"{DATE1}T13:00:00Z", 350),
-    Flight(FURNEUX, 26500, 4, 5, f"{DATE1}T13:00:00Z", 600),
-
-    Flight(COLEMORE, 20000, 5.8, 5, f"{DATE1}T13:00:00Z", 350),
-    Flight(COLEMORE, 26500, 4, 5, f"{DATE1}T13:00:00Z", 600),
-
-    Flight(FURNEUX, 20000, 5.8, 5, f"{DATE2}T13:00:00Z", 350),
-    Flight(FURNEUX, 26500, 4, 5, f"{DATE2}T13:00:00Z", 600),
-
-    Flight(COLEMORE, 20000, 5.8, 5, f"{DATE2}T13:00:00Z", 350),
-    Flight(COLEMORE, 26500, 4, 5, f"{DATE2}T13:00:00Z", 600),
-
-    Flight(FURNEUX, 20000, 5.8, 5, f"{DATE3}T13:00:00Z", 350),
-    Flight(FURNEUX, 26500, 4, 5, f"{DATE3}T13:00:00Z", 600),
-
-    Flight(COLEMORE, 20000, 5.8, 5, f"{DATE3}T13:00:00Z", 350),
-    Flight(COLEMORE, 26500, 4, 5, f"{DATE3}T13:00:00Z", 600),
+BASE_DATE = "2022-07-"
 
 
-]
+def create_raw_flights():
+    RAW_FLIGHTS = []
+    for date in [11]:
+        for burst, asent, balloon_type, notes in [[27308 , 5.1, 2500, "2500g payload"], [27300, 4.3, 1000, "3000g payload"], [27248, 3.8, 1000, "3300g payload"], [25000, 4.3, 3000, "3000g payload : Cutdown 25km"], [15000, 5.63, 350, ""]]:
+            RAW_FLIGHTS.append(Flight(VINCENT_SQUARE, burst, asent, 5, f"{BASE_DATE}{str(date).zfill(2)}T05:00:00Z", balloon_type, notes))
+    return RAW_FLIGHTS

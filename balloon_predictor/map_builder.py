@@ -14,8 +14,6 @@ from util import Flight, LocationMarker
 PREDICTOR_URL = "http://predict.cusf.co.uk/api/v1/"
 
 
-
-
 def get_flight_route_data(launch:Flight, flight_list):
     launch_longitude = float(launch.launch_longitude)
     if launch_longitude < 0:
@@ -49,11 +47,16 @@ def draw_launch_map(flights):
         if flight.error:
             continue
         points = []
+        final_marker = flight.markers[-1]
+        flight.landing_time = final_marker.time
         for point in flight.markers:
             points.append((point.latitude, point.longitude))
         folium.PolyLine(points, color=flight.line_colour, weight=2.5, opacity=1, ).add_to(m)
         for point in flight.markers:
-            folium.CircleMarker((point.latitude, point.longitude), radius=1, popup=f"{point.launch_details.launch_site_name}<br>Burst : {point.launch_details.burst_altitude}m<br>Altitude : {round(point.altitude)}m<br>Time:{point.time}<br>Balloon size : {flight.balloon_size}g<br>Ascent Rate : {flight.ascent_rate}m/s",tooltip=f"{round(point.altitude)}m<br>Date : {point.date}", color=flight.marker_colour).add_to(m)
+            popup_text = f"<b>{point.launch_details.launch_site_name}</b><br><b>Burst</b>: {point.launch_details.burst_altitude}m<br><b>Altitude</b>: {round(point.altitude)}m<br><b>Time</b>: {point.time}<br><b>Balloon size</b>: {flight.balloon_size}g<br><b>Ascent Rate</b>: {flight.ascent_rate}m/s<br><b>Notes</b>: {flight.notes}"
+            popup = folium.Popup(popup_text, max_width=300, min_width=100)
+            folium.CircleMarker((point.latitude, point.longitude), radius=1, popup=popup, tooltip=f"{round(point.altitude)}m<br>Date : {point.date}", color=flight.marker_colour).add_to(m)
+
         #folium.Marker((flight.markers[0].latitude, flight.markers[0].longitude),icon=folium.features.CustomIcon("static/img/target-1-sm.png", icon_size=(10, 10)), popup=f"Launch Site<br>Burst_Height:{flight.burst_altitude}m<br>Time:{flight.markers[0].time}<br>Balloon size : {flight.balloon_size}g<br>Date : {flight.markers[0].date}").add_to(m)
         ##folium.Marker((flight.burst_marker.latitude, flight.burst_marker.longitude), icon=folium.features.CustomIcon("static/img/pop-marker.png", icon_size=(20, 20)), popup=f"Burst<br>Burst_Height:{flight.burst_altitude}m<br>Time:{flight.burst_marker.time}<br>Balloon size : {flight.balloon_size}g<br>Date : {flight.burst_marker.date}").add_to(m)
         #folium.Marker((flight.markers[-1].latitude, flight.markers[-1].longitude),icon=folium.features.CustomIcon("static/img/target-8-sm.png", icon_size=(10, 10)), popup=f"Landing Site<br>Burst_Height:{flight.burst_altitude}m<br>Time:{flight.markers[-1].time}<br>Balloon size : {flight.balloon_size}g<br>Date : {flight.markers[-1].date}<br>Ascent Rate : {flight.ascent_rate}m/s").add_to(m)
@@ -108,7 +111,7 @@ def generate_launch_flights():
     flight_threads = []
     flight_list = []
 
-    for flight in config.RAW_FLIGHTS:
+    for flight in config.create_raw_flights():
         flight_thread = threading.Thread(target=get_flight_route_data, args=(flight, flight_list))
         #flight_thread.daemon = True
         flight_thread.start()
@@ -119,4 +122,4 @@ def generate_launch_flights():
         flight_thread.join()
 
     print("All threads done")
-    return draw_launch_map(flight_list)
+    return flight_list, draw_launch_map(flight_list)
