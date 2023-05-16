@@ -11,7 +11,7 @@ from config import CASTOR_BAY, FURNEUX, VINCENT_SQUARE, COLEMORE, HOURLY_FLIGHT_
 
 from util import Flight, LocationMarker
 
-PREDICTOR_URL = "http://predict.cusf.co.uk/api/v1/"
+PREDICTOR_URL = "https://api.v2.sondehub.org/tawhiri"
 
 
 def get_flight_route_data(launch:Flight, flight_list):
