@@ -9,12 +9,12 @@ import requests
 import config
 from config import CASTOR_BAY, FURNEUX, VINCENT_SQUARE, COLEMORE, HOURLY_FLIGHT_PROFILE, TITLE, HOURLY_TITLE, DEFAULT_LOCATION
 
-from util import Flight, LocationMarker
+from util import FlightManual, LocationMarker
 
 PREDICTOR_URL = "https://api.v2.sondehub.org/tawhiri"
 
 
-def get_flight_route_data(launch:Flight, flight_list):
+def get_flight_route_data(launch:FlightManual, flight_list):
     launch_longitude = float(launch.launch_longitude)
     if launch_longitude < 0:
         launch_longitude = 360 + launch_longitude
@@ -84,14 +84,14 @@ def generate_hourly_flights(location, burst_altitude, ascent_rate, descent_rate,
     print("Generating flights...")
     flights = []
     flight_threads = []
-    flight_list:List[Flight] = []
+    flight_list:List[FlightManual] = []
     start = datetime.datetime.now()
     DAYS = 7
     HOUR_GAP = 2
     for index in range(0, int((24/HOUR_GAP) * DAYS)):
         new_datetime = start + datetime.timedelta(hours=index*HOUR_GAP)
         if 18 > new_datetime.hour > 3:
-            flights.append(Flight(location, burst_altitude, ascent_rate, descent_rate, f"{new_datetime.strftime('%Y-%m-%dT%H:%M:%S')}Z", balloon_size))
+            flights.append(FlightManual(location, burst_altitude, ascent_rate, descent_rate, f"{new_datetime.strftime('%Y-%m-%dT%H:%M:%S')}Z", balloon_size))
 
     for flight in flights:
         flight_thread = threading.Thread(target=get_flight_route_data, args=(flight, flight_list))

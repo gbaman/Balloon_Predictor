@@ -1,5 +1,6 @@
 # Balloon Predictor configuration file
-from util import Flight
+from util import FlightManual, FlightBalloon
+from burst_calc import BalloonEnum
 
 # Launch sites
 VINCENT_SQUARE = ["Vincent Square", "51.4934", "-0.1351"]
@@ -18,21 +19,17 @@ DEFAULT_LOCATION = CHURCHILL
 HOURLY_FLIGHT_PROFILE = [26000, 4.5, 5, 600]
 
 # Main home page title
-TITLE = "Launches from Cambridge University"
+TITLE = "Vincent Square launches"
 
 # Title for hourly launches pages
 HOURLY_TITLE = "Hourly launches"
 
-BASE_DATE = "2023-05-"
+BASE_DATE = "2023-06-"
 
 
 def create_raw_flights():
+
     RAW_FLIGHTS = []
-    for date in [21]:
-        for burst, asent, balloon_type, notes in [[23166, 1, 350, "1115g payload"],
-                                                  [23142, 1.1, 350, "1115g payload"],
-                                                  [23101, 1.25, 350, "1115g payload"],
-                                                  [23020, 1.5, 350, "1115g payload"],
-                                                  ]:
-            RAW_FLIGHTS.append(Flight(CHURCHILL, burst, asent, 5, f"{BASE_DATE}{str(date).zfill(2)}T15:13:00Z", balloon_type, notes))
+    for date in [10, 11, 17, 18]:
+        RAW_FLIGHTS.append(FlightBalloon(VINCENT_SQUARE, balloon=BalloonEnum.H800, payload_mass=2500, descent_rate=5, launch_datetime=f"{BASE_DATE}{str(date).zfill(2)}T05:00:00Z", target_ascent_rate=5))
     return RAW_FLIGHTS

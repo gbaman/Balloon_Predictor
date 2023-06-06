@@ -3,6 +3,7 @@ from typing import List
 import random
 import datetime
 from dateutil import parser
+import burst_calc
 
 COLOURS = ["red", "blue", "green", "purple", "orange", "darkred", "darkblue", "darkgreen", "cadetblue", "gray", "black"]
 
@@ -13,7 +14,7 @@ def get_next_weather_time():
         return "Next weather at "
 
 
-class Flight():
+class FlightManual():
     def __init__(self, launch_site, burst_altitude, ascent_rate, descent_rate, launch_datetime, balloon_size, notes=""):
         self.launch_site = launch_site[0]
         self.launch_latitude = launch_site[1]
@@ -34,8 +35,31 @@ class Flight():
         self.landing_time = ""
 
 
+class FlightBalloon():
+    def __init__(self, launch_site, balloon: burst_calc.BalloonEnum, payload_mass, descent_rate, launch_datetime, notes="", target_burst_altitude=None, target_ascent_rate=None):
+        ascent_rate, burst_altitude, time_to_burst, neck_lift, launch_volume, launch_litres, launch_cf, warnings = burst_calc.calc_update(balloon, payload_mass, target_ascent_rate, target_burst_altitude)
+        self.launch_site = launch_site[0]
+        self.launch_latitude = launch_site[1]
+        self.launch_longitude = launch_site[2]
+        self.burst_altitude = burst_altitude
+        self.ascent_rate = ascent_rate
+        self.descent_rate = descent_rate
+        self.launch_datetime = launch_datetime
+        self.launch_datetime_obj = parser.parse(launch_datetime)
+        self.launch_site_name = launch_site[0]
+        self.markers: List[LocationMarker] = []
+        self.burst_marker : LocationMarker = None
+        self.balloon_size = balloon.value.name
+        self.error = None
+        self.marker_colour = random.choice(COLOURS)
+        self.line_colour = random.choice(list(set(COLOURS) - set(self.marker_colour)))
+        self.notes = notes
+        self.landing_time = ""
+
+
+
 class LocationMarker():
-    def __init__(self, data, launch_details: Flight):
+    def __init__(self, data, launch_details: FlightManual):
         self.longitude = float(data["longitude"])
         if self.longitude > 180.0:
             self.longitude = self.longitude - 360.0
