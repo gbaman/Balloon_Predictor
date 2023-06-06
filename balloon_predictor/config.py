@@ -28,11 +28,11 @@ BASE_DATE = "2023-05-"
 
 def create_raw_flights():
     RAW_FLIGHTS = []
-    for date in [21, 22, 27, 28]:
-        for burst, asent, balloon_type, notes in [[25000 , 5, 600, "1500g payload"],
-                                                  [26500, 5, 600, "1000g payload"],
-                                                  [18873, 5, 300, "1500g payload"],
-                                                  [20700, 5, 300, "1000g payload"]
+    for date in [21]:
+        for burst, asent, balloon_type, notes in [[23166, 1, 350, "1115g payload"],
+                                                  [23142, 1.1, 350, "1115g payload"],
+                                                  [23101, 1.25, 350, "1115g payload"],
+                                                  [23020, 1.5, 350, "1115g payload"],
                                                   ]:
-            RAW_FLIGHTS.append(Flight(CHURCHILL, burst, asent, 5, f"{BASE_DATE}{str(date).zfill(2)}T05:00:00Z", balloon_type, notes))
+            RAW_FLIGHTS.append(Flight(CHURCHILL, burst, asent, 5, f"{BASE_DATE}{str(date).zfill(2)}T15:13:00Z", balloon_type, notes))
     return RAW_FLIGHTS
