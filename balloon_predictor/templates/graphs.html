@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>Graphs</h1>
+{% for graph in graphs %}
+
+    <img src='data:image/png;base64,{{ graph }}'/>
+    {% endfor %}
+    <br>
+{% endblock %}

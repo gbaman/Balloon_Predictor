@@ -13,10 +13,11 @@ class GasEnum(Enum):
 
 
 class Balloon:
-    def __init__(self, name, burst_diameter, cd):
+    def __init__(self, name, burst_diameter, cd, standard=True):
         self.name = name
         self.burst_diameter = burst_diameter
         self.cd = cd
+        self.standard = standard
 
 
 class BalloonEnum(Enum):
@@ -33,22 +34,22 @@ class BalloonEnum(Enum):
     K1500 = Balloon("K1500", 9.44, 0.25)
     K2000 = Balloon("K2000", 10.54, 0.25)
     K3000 = Balloon("K3000", 13.00, 0.25)
-    H100 = Balloon("H100", 2.00, 0.25)
+    H100 = Balloon("H100", 2.00, 0.25, False)
     H200 = Balloon("H200", 3.00, 0.25)
-    H300 = Balloon("H300", 3.80, 0.25)
+    H300 = Balloon("H300", 3.80, 0.25, False)
     H350 = Balloon("H350", 4.10, 0.25)
-    H400 = Balloon("H400", 4.50, 0.25)
-    H500 = Balloon("H500", 5.00, 0.25)
+    H400 = Balloon("H400", 4.50, 0.25, False)
+    H500 = Balloon("H500", 5.00, 0.25, False)
     H600 = Balloon("H600", 5.80, 0.30)
-    H750 = Balloon("H750", 6.50, 0.30)
+    H750 = Balloon("H750", 6.50, 0.30, False)
     H800 = Balloon("H800", 6.80, 0.30)
-    H950 = Balloon("H950", 7.20, 0.30)
+    H950 = Balloon("H950", 7.20, 0.30, False)
     H1000 = Balloon("H1000", 7.50, 0.30)
-    H1200 = Balloon("H1200", 8.50, 0.25)
-    H1500 = Balloon("H1500", 9.50, 0.25)
-    H1600 = Balloon("H1600", 10.50, 0.25)
-    H2000 = Balloon("H2000", 11.00, 0.25)
-    H3000 = Balloon("H3000", 12.50, 0.25)
+    H1200 = Balloon("H1200", 8.50, 0.25, False)
+    H1500 = Balloon("H1500", 9.50, 0.25, False)
+    H1600 = Balloon("H1600", 10.50, 0.25, False)
+    H2000 = Balloon("H2000", 11.00, 0.25, False)
+    H3000 = Balloon("H3000", 12.50, 0.25, False)
     P100 = Balloon("P100", 1.6, 0.25)
     P350 = Balloon("P350", 4.0, 0.25)
     P600 = Balloon("P600", 5.8, 0.30)
