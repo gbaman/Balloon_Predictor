@@ -11,7 +11,7 @@ app = Flask(__name__)
 def generate_nav_bar():
     return_dict = {"nav_bar":[[["Main map", "/"]]],
             "title":"Balloon predictor"}
-    return_dict["nav_bar"].append([["Balloon graphs", "/graphs/5"]])
+    return_dict["nav_bar"].append([["Balloon graphs", "/graphs/ascent/5"]])
     hourly_locations = []
     for location in LOCATIONS:
         hourly_locations.append([location[0], f"/hourly/{location[0].lower().replace(' ', '_')}"])
@@ -40,9 +40,9 @@ def hourly_location(location_name=DEFAULT_LOCATION[0], burst_altitude=HOURLY_FLI
     return f"Error - Location {found_location} does not exist. Available locations can be found below. {locations_str}"
 
 
-@app.route("/graphs")
-@app.route("/graphs/<ascent_rate>")
-@app.route("/graphs/<ascent_rate>/<weight>")
+@app.route("/graphs/ascent")
+@app.route("/graphs/ascent/<ascent_rate>")
+@app.route("/graphs/ascent/<ascent_rate>/<weight>")
 def generate_balloon_graphs(ascent_rate=5, weight=None):
     graphs = []
     weights_tuple = (500, 1000, 1500, 2000, 2500, 3000)

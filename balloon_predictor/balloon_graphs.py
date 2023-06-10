@@ -97,7 +97,7 @@ def create_balloon_altitude_graph(target_ascent_rate=5, weights=(500, 1000, 1500
     # Add background grid
     fig.grid(True, axis='y', linestyle='--')
     fig.grid(True, axis='x', linestyle='-')
-    fig.set_ylim(0)
+    fig.set_ylim(0, 37000)
     lines, labels = fig.get_legend_handles_labels()
     fig.legend(lines, labels)
     buf = BytesIO()
