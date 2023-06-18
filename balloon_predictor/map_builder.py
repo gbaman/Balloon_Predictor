@@ -1,7 +1,7 @@
 import datetime
 import threading
 import time
-from typing import List
+from typing import List, Tuple, Any, Union
 
 import folium
 import requests
@@ -9,7 +9,7 @@ import requests
 import config
 from config import CASTOR_BAY, FURNEUX, VINCENT_SQUARE, COLEMORE, HOURLY_FLIGHT_PROFILE, TITLE, HOURLY_TITLE, DEFAULT_LOCATION
 
-from util import FlightManual, LocationMarker
+from util import FlightManual, LocationMarker, FlightBalloon
 
 PREDICTOR_URL = "https://api.v2.sondehub.org/tawhiri"
 
@@ -105,7 +105,7 @@ def generate_hourly_flights(location, burst_altitude, ascent_rate, descent_rate,
     return draw_hourly_map(flight_list)
 
 
-def generate_launch_flights():
+def generate_launch_flights() -> Tuple[List[Union[FlightManual, FlightBalloon]], Any]:
     print("Generating flights...")
 
     flight_threads = []

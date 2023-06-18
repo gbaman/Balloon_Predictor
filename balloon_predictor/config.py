@@ -30,6 +30,8 @@ BASE_DATE = "2023-06-"
 def create_raw_flights():
 
     RAW_FLIGHTS = []
-    for date in [10, 11, 17, 18]:
-        RAW_FLIGHTS.append(FlightBalloon(VINCENT_SQUARE, balloon=BalloonEnum.H800, payload_mass=2500, descent_rate=5, launch_datetime=f"{BASE_DATE}{str(date).zfill(2)}T05:00:00Z", target_ascent_rate=4))
+    for date in [24, 25]:
+        RAW_FLIGHTS.append(FlightBalloon(VINCENT_SQUARE, balloon=BalloonEnum.H600, payload_mass=1700, descent_rate=5, launch_datetime=f"{BASE_DATE}{str(date).zfill(2)}T04:45:00Z", target_ascent_rate=4.2))
+        RAW_FLIGHTS.append(FlightBalloon(VINCENT_SQUARE, balloon=BalloonEnum.H800, payload_mass=1700, descent_rate=5, launch_datetime=f"{BASE_DATE}{str(date).zfill(2)}T04:45:00Z", target_ascent_rate=4.2))
+
     return RAW_FLIGHTS

@@ -6,12 +6,14 @@
 <tr style="background-color: lightgray">
     <th>Location</th>
     <th>Burst altitude</th>
+    <th>Payload mass</th>
     <th>Ascent rate</th>
     <th>Descent rate</th>
     <th>Launch date/time (UTC)</th>
     <th>Balloon type</th>
     <th>Marker colour</th>
     <th>Landing time</th>
+    <th>Helium</th>
     <th>Notes</th>
     <th>Error</th>
 </tr>
@@ -19,12 +21,14 @@
         <tr>
             <td>{{ flight.launch_site }}</td>
             <td>{{ flight.burst_altitude }}m</td>
+            <td>{{ flight.payload_mass }}g</td>
             <td>{{ flight.ascent_rate }}m/s</td>
             <td>{{ flight.descent_rate }}m/s</td>
             <td>{{ flight.launch_datetime_obj.strftime('%Y-%m-%d %H:%M') }}</td>
             <td>{{ flight.balloon_size }}g</td>
             <td>{{ flight.marker_colour }}</td>
             <td>{{ flight.landing_time }}</td>
+            <td>{{ flight.launch_volume }}m3</td>
             <td>{{ flight.notes }}</td>
             {% if flight.error %}
             <td bgcolor="red">{{ flight.error['description'] }}</td>

@@ -33,6 +33,8 @@ class FlightManual():
         self.line_colour = random.choice(list(set(COLOURS) - set(self.marker_colour)))
         self.notes = notes
         self.landing_time = ""
+        self.launch_volume = None
+        self.payload_mass = None
 
 
 class FlightBalloon():
@@ -55,6 +57,8 @@ class FlightBalloon():
         self.line_colour = random.choice(list(set(COLOURS) - set(self.marker_colour)))
         self.notes = notes
         self.landing_time = ""
+        self.launch_volume = launch_volume
+        self.payload_mass = payload_mass
 
 
 
