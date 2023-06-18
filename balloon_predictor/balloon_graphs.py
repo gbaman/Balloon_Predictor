@@ -105,3 +105,34 @@ def create_balloon_altitude_graph(target_ascent_rate=5, weights=(500, 1000, 1500
     # Embed the result in the html output.
     data = base64.b64encode(buf.getbuffer()).decode("ascii")
     return data
+
+
+def create_single_balloon_altitude_graph(balloon_enum: burst_calc.BalloonEnum, payload_weight=2000, ascent_rates=(2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6)):
+    f = Figure()
+    fig = f.add_subplot(1, 1, 1)
+    balloon_launches = []
+    for target_ascent_rate in ascent_rates:
+        ascent_rate, burst_altitude, time_to_burst, neck_lift, launch_volume, launch_litres, launch_cf, warnings = burst_calc.calc_update(balloon_enum, weight, target_ascent_rate=target_ascent_rate)
+        launch = LaunchStats(balloon_enum, float(ascent_rate), int(burst_altitude), int(time_to_burst), int(neck_lift), float(launch_volume), int(launch_litres), launch_cf, warnings)
+        balloon_launches.append(launch)
+        fig.plot(ascent_rates, [b.burst_altitude for b in balloon_launches], label=f"{payload_weight}g payload")
+
+    fig.set_title(f'Burst altitudes vs balloon sizes ({target_ascent_rate}m/s ascent rate)')
+    fig.set_xlabel('Balloon names (g)')
+    fig.set_ylabel('Burst altitude (m)')
+    # Rotate x-axis labels
+    fig.set_xticks(range(len(balloon_names)))
+    fig.set_xticklabels(balloon_names, rotation=90)
+    # Adjust figure size and layout
+    f.tight_layout()
+    # Add background grid
+    fig.grid(True, axis='y', linestyle='--')
+    fig.grid(True, axis='x', linestyle='-')
+    fig.set_ylim(0, 37000)
+    lines, labels = fig.get_legend_handles_labels()
+    fig.legend(lines, labels)
+    buf = BytesIO()
+    f.savefig(buf, format="png")
+    # Embed the result in the html output.
+    data = base64.b64encode(buf.getbuffer()).decode("ascii")
+    return data
