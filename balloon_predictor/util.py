@@ -15,7 +15,7 @@ def get_next_weather_time():
 
 
 class FlightManual():
-    def __init__(self, launch_site, burst_altitude, ascent_rate, descent_rate, launch_datetime, balloon_size, notes=""):
+    def __init__(self, launch_site, burst_altitude, ascent_rate, descent_rate, launch_datetime, balloon, notes=""):
         self.launch_site = launch_site[0]
         self.launch_latitude = launch_site[1]
         self.launch_longitude = launch_site[2]
@@ -27,7 +27,7 @@ class FlightManual():
         self.launch_site_name = launch_site[0]
         self.markers: List[LocationMarker] = []
         self.burst_marker : LocationMarker = None
-        self.balloon_size = balloon_size
+        self.balloon_size = balloon.value.name
         self.error = None
         self.marker_colour = random.choice(COLOURS)
         self.line_colour = random.choice(list(set(COLOURS) - set(self.marker_colour)))
