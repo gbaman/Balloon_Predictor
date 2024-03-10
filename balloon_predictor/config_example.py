@@ -32,6 +32,7 @@ def create_raw_flights():
     # Add your flights below
     # 2 types of flights are supported.
     # The first (and recommended) is a FlightBalloon object. This will automatically calculate the burst altitude, helium needed etc by using the same data on the Habhub burst predictor. Must include a payload weight.
+    # See BalloonEnum class in burst_calc.py for available balloon sizes.
     RAW_FLIGHTS.append(FlightBalloon(launch_site=VINCENT_SQUARE, balloon=BalloonEnum.H600, payload_mass=1700, descent_rate=5, launch_datetime=f"2023-06-20T04:45:00Z", target_ascent_rate=5))
 
     # The second option is a FlightManual object. This allows specifying the burst altitude to do the calculations manually.
