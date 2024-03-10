@@ -23,7 +23,7 @@ LOCATIONS = [VINCENT_SQUARE, CASTOR_BAY, FURNEUX, COLEMORE, CHURCHILL]
 DEFAULT_LOCATION = VINCENT_SQUARE
 
 # Burst altitude, assent rate, descent rate, balloon size
-HOURLY_FLIGHT_PROFILE = [26000, 4.5, 5, 600]
+HOURLY_FLIGHT_PROFILE = [26000, 4.5, 5, BalloonEnum.H600]
 
 
 def create_raw_flights():
