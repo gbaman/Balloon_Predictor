@@ -9,9 +9,8 @@ app = Flask(__name__)
 
 @app.context_processor
 def generate_nav_bar():
-    return_dict = {"nav_bar":[[["Main map", "/"]]],
+    return_dict = {"nav_bar":[],
             "title":"Balloon predictor"}
-    return_dict["nav_bar"].append([["Balloon graphs", "/graphs/ascent/5"]])
     hourly_locations = []
     for location in LOCATIONS:
         hourly_locations.append([location[0], f"/hourly/{location[0].lower().replace(' ', '_')}"])
