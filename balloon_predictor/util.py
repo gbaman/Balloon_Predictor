@@ -32,10 +32,24 @@ class FlightManual():
         self.marker_colour = random.choice(COLOURS)
         self.line_colour = random.choice(list(set(COLOURS) - set(self.marker_colour)))
         self.notes = notes
-        self.landing_time = ""
         self.launch_volume = None
         self.payload_mass = None
 
+    @property
+    def landing_time(self):
+        if self.markers:
+            return self.markers[-1].time
+        return ""
+    @property
+    def flight_duration(self):
+        if self.markers:
+            start_time = self.markers[0].datetime
+            end_time = self.markers[-1].datetime
+            start_dt = parser.parse(start_time)
+            end_dt = parser.parse(end_time)
+            duration = end_dt - start_dt
+            return f"{duration.seconds // 3600}h{(duration.seconds % 3600) // 60:02d}"
+        return ""
 
 class FlightBalloon():
     def __init__(self, launch_site, balloon: burst_calc.BalloonEnum, payload_mass, descent_rate, launch_datetime, notes="", target_burst_altitude=None, target_ascent_rate=None):
@@ -56,11 +70,25 @@ class FlightBalloon():
         self.marker_colour = random.choice(COLOURS)
         self.line_colour = random.choice(list(set(COLOURS) - set(self.marker_colour)))
         self.notes = notes
-        self.landing_time = ""
         self.launch_volume = launch_volume
         self.payload_mass = payload_mass
 
+    @property
+    def landing_time(self):
+        if self.markers:
+            return self.markers[-1].time
+        return ""
 
+    @property
+    def flight_duration(self):
+        if self.markers:
+            start_time = self.markers[0].datetime
+            end_time = self.markers[-1].datetime
+            start_dt = parser.parse(start_time)
+            end_dt = parser.parse(end_time)
+            duration = end_dt - start_dt
+            return f"{duration.seconds // 3600}h{(duration.seconds % 3600) // 60:02d}"
+        return ""
 
 class LocationMarker():
     def __init__(self, data, launch_details: FlightManual):

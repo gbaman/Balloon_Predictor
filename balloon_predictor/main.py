@@ -22,7 +22,7 @@ def generate_nav_bar():
 @app.route("/")
 def home():
     flight_list, map_data = map_builder.generate_launch_flights()
-    return render_template("map.html", map_data=map_data._repr_html_(), raw_flights=flight_list)
+    return render_template("map.html", map_data=map_data, raw_flights=flight_list)
 
 
 @app.route("/hourly")

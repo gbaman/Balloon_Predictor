@@ -9,10 +9,11 @@
     <th>Payload mass</th>
     <th>Ascent rate</th>
     <th>Descent rate</th>
-    <th>Launch date/time (UTC)</th>
+    <th>Launch date/time (local)</th>
     <th>Balloon type</th>
     <th>Marker colour</th>
-    <th>Landing time</th>
+    <th>Landing time (local)</th>
+    <th>Flight duration</th>
     <th>Helium</th>
     <th>Notes</th>
     <th>Error</th>
@@ -24,10 +25,13 @@
             <td>{{ flight.payload_mass }}g</td>
             <td>{{ flight.ascent_rate }}m/s</td>
             <td>{{ flight.descent_rate }}m/s</td>
-            <td>{{ flight.launch_datetime_obj.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td><span class="utc-time" data-utc="{{ flight.launch_datetime_obj.strftime('%Y-%m-%d %H:%M %Z') }}">{{ flight.launch_datetime_obj.strftime('%Y-%m-%d %H:%M') }}</span> <span class="local-tz"></span>
             <td>{{ flight.balloon_size }}g</td>
             <td>{{ flight.marker_colour }}</td>
-            <td>{{ flight.landing_time }}</td>
+            <td>
+<span class="utc-time" data-utc="{{ flight.landing_time }}">{{ flight.landing_time }}</span> <span class="local-tz"></span>
+            </td>
+            <td>{{ flight.flight_duration }}</td>
             <td>{{ flight.launch_volume }}m3</td>
             <td>{{ flight.notes }}</td>
             {% if flight.error %}

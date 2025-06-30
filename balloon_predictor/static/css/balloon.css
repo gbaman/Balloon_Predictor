@@ -1,11 +1,8 @@
-
-
-
-table, td, th {
-  border: 1px solid black;
-    padding: 15px;
+table, table td, table th {
+  border: 1px solid black !important;
+  padding: 15px !important;
 }
 
 table {
-  border-collapse: collapse;
+  border-collapse: collapse !important;
 }
