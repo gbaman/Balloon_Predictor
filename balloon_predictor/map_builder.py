@@ -53,7 +53,7 @@ def draw_launch_map(flights):
             points.append((point.latitude, point.longitude))
         folium.PolyLine(points, color=flight.line_colour, weight=2.5, opacity=1, ).add_to(m)
         for point in flight.markers:
-            popup_text = f"<b>{point.launch_details.launch_site_name}</b><br><b>Burst</b>: {point.launch_details.burst_altitude}m<br><b>Altitude</b>: {round(point.altitude)}m<br><b>Time</b>: {point.time}<br><b>Balloon size</b>: {flight.balloon_size}g<br><b>Ascent Rate</b>: {flight.ascent_rate}m/s<br><b>Notes</b>: {flight.notes}"
+            popup_text = f"<b>{point.launch_details.launch_site_name}</b><br><b>Burst</b>: {point.launch_details.burst_altitude}m<br><b>Altitude</b>: {round(point.altitude)}m<br><b>Time</b>: {point.time}<br><b>Balloon size</b>: {flight.balloon_size}g<br><b>Ascent Rate</b>: {flight.ascent_rate}m/s<br><b>Descent Rate</b>: {flight.descent_rate}m/s<br><b>Notes</b>: {flight.notes}"
             popup = folium.Popup(popup_text, max_width=300, min_width=100)
             folium.CircleMarker((point.latitude, point.longitude), radius=1, popup=popup, tooltip=f"{round(point.altitude)}m<br>Date : {point.date}", color=flight.marker_colour).add_to(m)
 
