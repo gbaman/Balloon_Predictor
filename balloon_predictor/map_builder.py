@@ -116,4 +116,6 @@ def generate_launch_flights() -> Tuple[List[Union[FlightManual, FlightBalloon]],
         flight_thread.join()
 
     print("All threads done")
+    flight_list.sort(key=lambda f: f.markers[-1].time)
+
     return flight_list, draw_launch_map(flight_list)
