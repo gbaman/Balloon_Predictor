@@ -35,6 +35,7 @@ def get_flight_route_data(launch:FlightManual, flight_list):
         for marker in response.json()["prediction"][0]["trajectory"] + response.json()["prediction"][1]["trajectory"]:
             launch.markers.append(LocationMarker(marker, launch))
         launch.burst_marker = LocationMarker(response.json()["prediction"][0]["trajectory"][-1], launch)
+        launch.weather_data_datetime = response.json()["request"]["dataset"]
     flight_list.append(launch)
     print("Thread done")
     return launch

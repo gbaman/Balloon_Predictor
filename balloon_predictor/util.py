@@ -34,6 +34,7 @@ class FlightManual():
         self.notes = notes
         self.launch_volume = None
         self.payload_mass = None
+        self.weather_data_datetime = None
 
     @property
     def landing_time(self):
@@ -72,6 +73,7 @@ class FlightBalloon():
         self.notes = notes
         self.launch_volume = launch_volume
         self.payload_mass = payload_mass
+        self.weather_data_datetime = None
 
     @property
     def landing_time(self):

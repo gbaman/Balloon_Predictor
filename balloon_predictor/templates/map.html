@@ -2,6 +2,7 @@
 {% block content %}
 {{ map_data|safe }}
 <h1>Balloon launches</h1>
+    <p>Using weather data from {{ raw_flights[0].weather_data_datetime }}</p>
 <table>
 <tr style="background-color: lightgray">
     <th>Location</th>
